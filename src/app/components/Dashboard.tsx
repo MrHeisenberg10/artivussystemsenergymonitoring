@@ -104,7 +104,7 @@ export function Dashboard() {
       <div className="flex items-center justify-between">
         <div>
           <h1 style={{ color: "#F8FAFC", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Energy Overview</h1>
-          <p style={{ color: "#64748B", fontSize: 13, marginTop: 2 }}>Building Complex A · Real-time monitoring active</p>
+          <p style={{ color: "#64748B", fontSize: 13, marginTop: 2 }}>Raymond Textile Plant · Real-time monitoring active</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>

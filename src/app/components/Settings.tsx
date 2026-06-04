@@ -40,7 +40,7 @@ export function Settings() {
               { label: "Full Name", value: "Sharad Sharma" },
               { label: "Email", value: "sharadsharma@artivussystems.com" },
               { label: "Role", value: "System Administrator" },
-              { label: "Organization", value: "Building Complex A Management" },
+              { label: "Organization", value: "Raymond Textile Plant" },
             ].map(f => (
               <div key={f.label}>
                 <label style={{ color: "#64748B", fontSize: 12, fontWeight: 500 }}>{f.label}</label>

@@ -103,7 +103,7 @@ export function Sustainability() {
       <div className="flex items-center justify-between">
         <div>
           <h1 style={{ color: "#F8FAFC", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Sustainability</h1>
-          <p style={{ color: "#64748B", fontSize: 13, marginTop: 2 }}>Environmental impact & green energy metrics · Building Complex A</p>
+          <p style={{ color: "#64748B", fontSize: 13, marginTop: 2 }}>Environmental impact & green energy metrics · Raymond Textile Plant</p>
         </div>
         <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl" style={{ background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.2)" }}>
           <Leaf size={14} color="#22C55E" />

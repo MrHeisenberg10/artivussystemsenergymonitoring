@@ -93,7 +93,7 @@ export function Analytics() {
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 style={{ color: "#F8FAFC", fontSize: 22, fontWeight: 700, letterSpacing: "-0.02em" }}>Analytics</h1>
-          <p style={{ color: "#64748B", fontSize: 13, marginTop: 2 }}>Advanced energy intelligence · Building Complex A</p>
+          <p style={{ color: "#64748B", fontSize: 13, marginTop: 2 }}>Advanced energy intelligence · Raymond Textile Plant</p>
         </div>
         <div className="flex items-center gap-2">
           <div className="flex rounded-xl overflow-hidden" style={{ border: "1px solid rgba(255,255,255,0.08)" }}>
