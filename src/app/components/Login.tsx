@@ -6,7 +6,7 @@ interface LoginProps {
 }
 
 export function Login({ onLogin }: LoginProps) {
-  const [email, setEmail] = useState("admin@energysys.io");
+  const [email, setEmail] = useState("sharadsharma@artivussystems.com");
   const [password, setPassword] = useState("••••••••");
   const [showPassword, setShowPassword] = useState(false);
   const [remember, setRemember] = useState(false);
@@ -140,7 +140,7 @@ export function Login({ onLogin }: LoginProps) {
                 }}
                 onFocus={e => e.target.style.borderColor = "#3B82F6"}
                 onBlur={e => e.target.style.borderColor = "rgba(255,255,255,0.1)"}
-                placeholder="admin@energysys.io"
+                placeholder="sharadsharma@artivussystems.com"
               />
             </div>
 

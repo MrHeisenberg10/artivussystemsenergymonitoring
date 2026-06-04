@@ -126,8 +126,8 @@ export function Layout({ children, activePage, onNavigate, onLogout }: LayoutPro
                 <User size={16} color="#fff" />
               </div>
               <div className="flex-1 min-w-0">
-                <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600 }}>John Mitchell</div>
-                <div style={{ color: "#475569", fontSize: 11, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>admin@energysys.io</div>
+                <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600 }}>Sharad Sharma</div>
+                <div style={{ color: "#475569", fontSize: 11, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>sharadsharma@artivussystems.com</div>
               </div>
               <button onClick={onLogout} style={{ color: "#475569" }}>
                 <LogOut size={15} />
@@ -187,7 +187,7 @@ export function Layout({ children, activePage, onNavigate, onLogout }: LayoutPro
             <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg, #3B82F6, #8B5CF6)" }}>
               <User size={15} color="#fff" />
             </div>
-            <span style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 500 }}>John M.</span>
+            <span style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 500 }}>Sharad S.</span>
             <ChevronDown size={14} color="#64748B" />
           </button>
         </header>

@@ -37,8 +37,8 @@ export function Settings() {
           </div>
           <div className="flex flex-col gap-4">
             {[
-              { label: "Full Name", value: "John Mitchell" },
-              { label: "Email", value: "admin@energysys.io" },
+              { label: "Full Name", value: "Sharad Sharma" },
+              { label: "Email", value: "sharadsharma@artivussystems.com" },
               { label: "Role", value: "System Administrator" },
               { label: "Organization", value: "Building Complex A Management" },
             ].map(f => (
