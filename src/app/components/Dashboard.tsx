@@ -8,23 +8,17 @@ import {
 } from "lucide-react";
 
 const energyData = [
-  { time: "00:00", usage: 42, predicted: 45 }, { time: "02:00", usage: 38, predicted: 40 },
-  { time: "04:00", usage: 35, predicted: 36 }, { time: "06:00", usage: 48, predicted: 50 },
-  { time: "08:00", usage: 72, predicted: 70 }, { time: "10:00", usage: 88, predicted: 85 },
-  { time: "12:00", usage: 95, predicted: 90 }, { time: "14:00", usage: 91, predicted: 88 },
-  { time: "16:00", usage: 85, predicted: 82 }, { time: "18:00", usage: 78, predicted: 80 },
-  { time: "20:00", usage: 62, predicted: 65 }, { time: "22:00", usage: 51, predicted: 55 },
+  { time: "00:00", usage: 42 }, { time: "02:00", usage: 38 },
+  { time: "04:00", usage: 35 }, { time: "06:00", usage: 48 },
+  { time: "08:00", usage: 72 }, { time: "10:00", usage: 88 },
+  { time: "12:00", usage: 95 }, { time: "14:00", usage: 91 },
+  { time: "16:00", usage: 85 }, { time: "18:00", usage: 78 },
+  { time: "20:00", usage: 62 }, { time: "22:00", usage: 51 },
 ];
 
 const floorData = [
-  { floor: "B2", hvac: 12, lighting: 8, equipment: 15 },
-  { floor: "B1", hvac: 18, lighting: 12, equipment: 22 },
-  { floor: "G", hvac: 28, lighting: 20, equipment: 35 },
-  { floor: "F1", hvac: 35, lighting: 25, equipment: 42 },
-  { floor: "F2", hvac: 30, lighting: 22, equipment: 38 },
-  { floor: "F3", hvac: 25, lighting: 18, equipment: 30 },
-  { floor: "F4", hvac: 20, lighting: 15, equipment: 25 },
-  { floor: "F5", hvac: 15, lighting: 10, equipment: 18 },
+  { floor: "Utility Plant", hvac: 12, lighting: 8, equipment: 15 },
+  { floor: "Weaving Plant", hvac: 18, lighting: 12, equipment: 22 },
 ];
 
 const deviceStatus = [
@@ -146,11 +140,10 @@ export function Dashboard() {
           <div className="flex items-center justify-between mb-4">
             <div>
               <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600 }}>Real-time Energy Usage</h3>
-              <p style={{ color: "#64748B", fontSize: 12, marginTop: 1 }}>Today's consumption vs predicted baseline</p>
+              <p style={{ color: "#64748B", fontSize: 12, marginTop: 1 }}>Today's consumption</p>
             </div>
             <div className="flex items-center gap-4">
               <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 rounded" style={{ background: "#3B82F6" }} /><span style={{ color: "#64748B", fontSize: 11 }}>Actual</span></div>
-              <div className="flex items-center gap-1.5"><div className="w-3 h-0.5 rounded" style={{ background: "#22C55E", borderBottom: "2px dashed #22C55E" }} /><span style={{ color: "#64748B", fontSize: 11 }}>Predicted</span></div>
             </div>
           </div>
           <ResponsiveContainer width="100%" height={200}>
@@ -170,7 +163,6 @@ export function Dashboard() {
               <YAxis tick={{ fill: "#475569", fontSize: 11 }} axisLine={false} tickLine={false} width={35} />
               <Tooltip content={<CustomTooltip />} />
               <Area type="monotone" dataKey="usage" name="Actual" stroke="#3B82F6" strokeWidth={2} fill="url(#blue)" dot={false} />
-              <Area type="monotone" dataKey="predicted" name="Predicted" stroke="#22C55E" strokeWidth={2} strokeDasharray="4 4" fill="url(#green)" dot={false} />
             </AreaChart>
           </ResponsiveContainer>
         </GlassCard>
@@ -205,9 +197,9 @@ export function Dashboard() {
 
       {/* Charts row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        {/* Floor-wise bar chart */}
+        {/* Plant-wise bar chart */}
         <GlassCard className="p-5">
-          <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Floor-wise Consumption</h3>
+          <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Plant-wise Consumption</h3>
           <p style={{ color: "#64748B", fontSize: 12, marginBottom: 16 }}>kWh breakdown by category</p>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={floorData} barSize={6}>
