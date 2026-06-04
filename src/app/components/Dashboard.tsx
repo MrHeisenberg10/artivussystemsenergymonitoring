@@ -55,12 +55,71 @@ const allMappedDevices = allDevices.map(d => ({
 }));
 
 const kpis = [
-  { label: "Total Energy", value: "48.6 MWh", delta: "+2.4%", up: true, sub: "Today vs yesterday", color: "#3B82F6", icon: <Zap size={20} />, gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))" },
-  { label: "Current Load", value: "4.28 MW", delta: "-5.1%", up: false, sub: "vs peak capacity", color: "#22C55E", icon: <TrendingUp size={20} />, gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))" },
-  { label: "Active Devices", value: "2,847", delta: "+12", up: true, sub: "1,842 online now", color: "#8B5CF6", icon: <Cpu size={20} />, gradient: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))" },
-  { label: "Monthly Cost", value: "₹84,210", delta: "-8.3%", up: false, sub: "vs last month", color: "#F59E0B", icon: <IndianRupee size={20} />, gradient: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05))" },
-  { label: "CO₂ Emissions", value: "18.4 t", delta: "-12%", up: false, sub: "This month", color: "#22C55E", icon: <Leaf size={20} />, gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))" },
-  { label: "Energy Savings", value: "34.2%", delta: "+3.1%", up: true, sub: "vs baseline", color: "#3B82F6", icon: <Wind size={20} />, gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))" },
+  {
+    label: "Total Energy",
+    value: "48.6 MWh",
+    delta: "+2.4%",
+    up: true,
+    sub: "Today vs yesterday",
+    color: "#3B82F6",
+    icon: <Zap size={20} />,
+    gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))"
+  },
+
+  {
+    label: "Current Load",
+    value: "4.28 MW",
+    delta: "-5.1%",
+    up: false,
+    sub: "vs peak demand",
+    color: "#22C55E",
+    icon: <TrendingUp size={20} />,
+    gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))"
+  },
+
+  {
+    label: "Active Equipment",
+    value: "152",
+    delta: "+4",
+    up: true,
+    sub: "145 running now",
+    color: "#8B5CF6",
+    icon: <Cpu size={20} />,
+    gradient: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))"
+  },
+
+  {
+    label: "Monthly Energy Cost",
+    value: "₹18.42 Lakh",
+    delta: "-8.3%",
+    up: false,
+    sub: "vs last month",
+    color: "#F59E0B",
+    icon: <span style={{ fontSize: "20px", fontWeight: 700 }}>₹</span>,
+    gradient: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05))"
+  },
+
+  {
+    label: "CO₂ Emissions",
+    value: "124.8 t",
+    delta: "-12%",
+    up: false,
+    sub: "This month",
+    color: "#22C55E",
+    icon: <Leaf size={20} />,
+    gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))"
+  },
+
+  {
+    label: "Energy Savings",
+    value: "14.7%",
+    delta: "+2.8%",
+    up: true,
+    sub: "vs baseline",
+    color: "#06B6D4",
+    icon: <Wind size={20} />,
+    gradient: "linear-gradient(135deg, rgba(6,182,212,0.15), rgba(6,182,212,0.05))"
+  }
 ];
 
 const CustomTooltip = ({ active, payload, label }: any) => {
@@ -96,7 +155,10 @@ function GlassCard({ children, className = "", style = {} }: { children: React.R
 
 export function Dashboard() {
   const [showAllDevices, setShowAllDevices] = useState(false);
-  const displayedDevices = showAllDevices ? allMappedDevices : allMappedDevices.slice(0, 6);
+  const [plantFilter, setPlantFilter] = useState<string | null>(null);
+
+  const filteredMappedDevices = plantFilter ? allMappedDevices.filter(d => d.location === plantFilter) : allMappedDevices;
+  const displayedDevices = showAllDevices ? filteredMappedDevices : filteredMappedDevices.slice(0, 6);
 
   return (
     <div className="p-6 flex flex-col gap-6" style={{ fontFamily: "'Inter', sans-serif", minHeight: "100%" }}>
@@ -208,7 +270,11 @@ export function Dashboard() {
           <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Plant-wise Consumption</h3>
           <p style={{ color: "#64748B", fontSize: 12, marginBottom: 16 }}>kWh breakdown by category</p>
           <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={floorData} barSize={6}>
+            <BarChart data={floorData} barSize={6} onClick={(data) => {
+              if (data && data.activeLabel) {
+                setPlantFilter(data.activeLabel === plantFilter ? null : String(data.activeLabel));
+              }
+            }} style={{ cursor: "pointer" }}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
               <XAxis dataKey="floor" tick={{ fill: "#475569", fontSize: 11 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: "#475569", fontSize: 11 }} axisLine={false} tickLine={false} width={30} />
@@ -265,7 +331,9 @@ export function Dashboard() {
         {/* Device table */}
         <GlassCard className="lg:col-span-2 p-5">
           <div className="flex items-center justify-between mb-4">
-            <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600 }}>Device Activity</h3>
+            <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600 }}>
+              Device Activity {plantFilter && <span style={{ color: "#3B82F6", fontSize: 13, fontWeight: 500 }}>({plantFilter})</span>}
+            </h3>
             <button onClick={() => setShowAllDevices(!showAllDevices)} className="px-3 py-1 rounded-lg text-sm" style={{ background: "rgba(59,130,246,0.15)", color: "#3B82F6", fontSize: 12 }}>
               {showAllDevices ? "Show less" : "View all"}
             </button>
