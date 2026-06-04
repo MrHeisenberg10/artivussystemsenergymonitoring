@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   LineChart, Line, BarChart, Bar, PieChart, Pie, Cell, AreaChart, Area,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
@@ -43,7 +44,7 @@ const alerts = [
   { id: 4, severity: "info", title: "Maintenance Scheduled", location: "Chiller Unit 1", time: "1h ago", icon: <CheckCircle size={14} /> },
 ];
 
-const devices = allDevices.slice(0, 6).map(d => ({
+const allMappedDevices = allDevices.map(d => ({
   id: d.id,
   name: d.name,
   type: d.type,
@@ -94,6 +95,9 @@ function GlassCard({ children, className = "", style = {} }: { children: React.R
 }
 
 export function Dashboard() {
+  const [showAllDevices, setShowAllDevices] = useState(false);
+  const displayedDevices = showAllDevices ? allMappedDevices : allMappedDevices.slice(0, 6);
+
   return (
     <div className="p-6 flex flex-col gap-6" style={{ fontFamily: "'Inter', sans-serif", minHeight: "100%" }}>
       {/* Page header */}
@@ -262,7 +266,9 @@ export function Dashboard() {
         <GlassCard className="lg:col-span-2 p-5">
           <div className="flex items-center justify-between mb-4">
             <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600 }}>Device Activity</h3>
-            <button className="px-3 py-1 rounded-lg text-sm" style={{ background: "rgba(59,130,246,0.15)", color: "#3B82F6", fontSize: 12 }}>View all</button>
+            <button onClick={() => setShowAllDevices(!showAllDevices)} className="px-3 py-1 rounded-lg text-sm" style={{ background: "rgba(59,130,246,0.15)", color: "#3B82F6", fontSize: 12 }}>
+              {showAllDevices ? "Show less" : "View all"}
+            </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -274,7 +280,7 @@ export function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {devices.map((d, i) => (
+                {displayedDevices.map((d, i) => (
                   <tr key={d.id} style={{ borderTop: "1px solid rgba(255,255,255,0.04)" }}>
                     <td className="py-3 pr-4">
                       <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 500 }}>{d.name}</div>
