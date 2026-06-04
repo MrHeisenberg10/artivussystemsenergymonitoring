@@ -1,9 +1,12 @@
 {
   "name": "@figma/my-make-file",
+  "homepage": "https://MrHeisenberg10.github.io/artivussystemsenergymonitoring/",
   "private": true,
   "version": "0.0.1",
   "type": "module",
   "scripts": {
+    "predeploy": "vite build",
+    "deploy": "gh-pages -d dist",
     "build": "vite build",
     "dev": "vite"
   },
