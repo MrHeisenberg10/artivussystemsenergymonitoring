@@ -56,8 +56,8 @@ export function Layout({ children, activePage, onNavigate, onLogout }: LayoutPro
       >
         {/* Logo */}
         <div className="flex items-center gap-3 px-4 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <div className="w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0" style={{ background: "linear-gradient(135deg, #3B82F6, #1D4ED8)" }}>
-            <Zap size={18} color="#fff" />
+          <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
+            <img src="/logo.jpg" alt="Logo" className="w-full h-full object-contain rounded-lg" />
           </div>
           {sidebarOpen && (
             <div>
