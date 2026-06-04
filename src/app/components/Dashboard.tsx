@@ -6,6 +6,7 @@ import {
   Zap, TrendingUp, Cpu, DollarSign, Wind, Leaf, AlertTriangle,
   ArrowUp, ArrowDown, ThumbsUp, Thermometer, Droplets, Activity, CheckCircle, XCircle, AlertCircle
 } from "lucide-react";
+import { allDevices } from "./Devices";
 
 const energyData = [
   { time: "00:00", usage: 42 }, { time: "02:00", usage: 38 },
@@ -42,20 +43,21 @@ const alerts = [
   { id: 4, severity: "info", title: "Maintenance Scheduled", location: "Chiller Unit 1", time: "1h ago", icon: <CheckCircle size={14} /> },
 ];
 
-const devices = [
-  { id: "DEV-001", name: "HVAC Unit 1", type: "Climate", location: "Floor 1", status: "online", consumption: "4.2 kW", uptime: "99.8%" },
-  { id: "DEV-002", name: "LED Array B3", type: "Lighting", location: "Basement", status: "online", consumption: "0.8 kW", uptime: "100%" },
-  { id: "DEV-003", name: "Chiller #2", type: "Cooling", location: "Rooftop", status: "warning", consumption: "12.4 kW", uptime: "94.2%" },
-  { id: "DEV-004", name: "Solar Inverter", type: "Renewable", location: "Rooftop", status: "online", consumption: "-8.6 kW", uptime: "99.1%" },
-  { id: "DEV-005", name: "UPS System", type: "Power", location: "Server Room", status: "online", consumption: "2.1 kW", uptime: "100%" },
-  { id: "DEV-006", name: "Air Handler", type: "Climate", location: "Floor 3", status: "offline", consumption: "0 kW", uptime: "76.4%" },
-];
+const devices = allDevices.slice(0, 6).map(d => ({
+  id: d.id,
+  name: d.name,
+  type: d.type,
+  location: d.location,
+  status: d.status,
+  consumption: d.power === 0 ? "0 kW" : `${(d.power / 1000).toFixed(1)} kW`,
+  uptime: `${d.uptime}%`
+}));
 
 const kpis = [
   { label: "Total Energy", value: "48.6 MWh", delta: "+2.4%", up: true, sub: "Today vs yesterday", color: "#3B82F6", icon: <Zap size={20} />, gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))" },
   { label: "Current Load", value: "4.28 MW", delta: "-5.1%", up: false, sub: "vs peak capacity", color: "#22C55E", icon: <TrendingUp size={20} />, gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))" },
   { label: "Active Devices", value: "2,847", delta: "+12", up: true, sub: "1,842 online now", color: "#8B5CF6", icon: <Cpu size={20} />, gradient: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))" },
-  { label: "Monthly Cost", value: "$84,210", delta: "-8.3%", up: false, sub: "vs last month", color: "#F59E0B", icon: <DollarSign size={20} />, gradient: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05))" },
+  { label: "Monthly Cost", value: "₹84,210", delta: "-8.3%", up: false, sub: "vs last month", color: "#F59E0B", icon: <DollarSign size={20} />, gradient: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05))" },
   { label: "CO₂ Emissions", value: "18.4 t", delta: "-12%", up: false, sub: "This month", color: "#22C55E", icon: <Leaf size={20} />, gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))" },
   { label: "Energy Savings", value: "34.2%", delta: "+3.1%", up: true, sub: "vs baseline", color: "#3B82F6", icon: <Wind size={20} />, gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))" },
 ];
@@ -66,7 +68,7 @@ const CustomTooltip = ({ active, payload, label }: any) => {
       <div className="px-3 py-2 rounded-xl" style={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.1)", fontSize: 12 }}>
         <div style={{ color: "#94A3B8", marginBottom: 4 }}>{label}</div>
         {payload.map((p: any) => (
-          <div key={p.dataKey} style={{ color: p.color }}>{p.name}: {p.value}{p.dataKey === "cost" ? "$" : " kWh"}</div>
+          <div key={p.dataKey} style={{ color: p.color }}>{p.name}: {p.value}{p.dataKey === "cost" ? "₹" : " kWh"}</div>
         ))}
       </div>
     );
@@ -217,7 +219,8 @@ export function Dashboard() {
         {/* Weekly analytics */}
         <GlassCard className="p-5">
           <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600, marginBottom: 4 }}>Weekly Overview</h3>
-          <p style={{ color: "#64748B", fontSize: 12, marginBottom: 16 }}>Energy (kWh) and cost ($)</p>
+          <p style={{ color: "#64748B", fontSize: 12, marginBottom: 16 }}>Energy (kWh) and cost (₹
+            )</p>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={weeklyData}>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.04)" />
@@ -225,7 +228,7 @@ export function Dashboard() {
               <YAxis tick={{ fill: "#475569", fontSize: 11 }} axisLine={false} tickLine={false} width={35} />
               <Tooltip contentStyle={{ background: "#1E293B", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 8, fontSize: 12 }} />
               <Bar dataKey="energy" name="Energy (kWh)" fill="#3B82F6" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="cost" name="Cost ($)" fill="#22C55E" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="cost" name="Cost (₹)" fill="#22C55E" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </GlassCard>

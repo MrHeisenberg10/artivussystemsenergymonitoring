@@ -1,19 +1,38 @@
 import { useState } from "react";
 import { Search, Filter, RefreshCw, Wifi, WifiOff, AlertTriangle, Thermometer, Zap, Activity, Cpu, Wind, Sun, Battery } from "lucide-react";
 
-const allDevices = [
-  { id: "DEV-001", name: "HVAC Unit 1", type: "HVAC", location: "Floor 1 · Zone A", status: "online", voltage: 220.4, current: 18.2, temp: 21.4, power: 4012, health: 94, uptime: 99.8, lastSeen: "Just now" },
-  { id: "DEV-002", name: "HVAC Unit 2", type: "HVAC", location: "Floor 2 · Zone B", status: "online", voltage: 219.8, current: 16.5, temp: 22.1, power: 3627, health: 88, uptime: 98.4, lastSeen: "Just now" },
-  { id: "DEV-003", name: "HVAC Unit 3", type: "HVAC", location: "Floor 4 · Zone B", status: "warning", voltage: 218.2, current: 22.8, temp: 34.8, power: 4982, health: 52, uptime: 91.2, lastSeen: "2m ago" },
-  { id: "DEV-004", name: "Chiller #1", type: "Cooling", location: "Rooftop", status: "online", voltage: 380.0, current: 28.4, temp: 12.2, power: 10792, health: 96, uptime: 99.9, lastSeen: "Just now" },
-  { id: "DEV-005", name: "Chiller #2", type: "Cooling", location: "Rooftop", status: "warning", voltage: 374.3, current: 31.2, temp: 28.4, power: 11678, health: 61, uptime: 94.2, lastSeen: "8m ago" },
-  { id: "DEV-006", name: "LED Array B1", type: "Lighting", location: "Basement L1", status: "online", voltage: 110.0, current: 7.3, temp: 28.5, power: 803, health: 100, uptime: 100, lastSeen: "Just now" },
-  { id: "DEV-007", name: "LED Array B2", type: "Lighting", location: "Basement L2", status: "online", voltage: 110.2, current: 7.1, temp: 27.8, power: 782, health: 99, uptime: 100, lastSeen: "Just now" },
-  { id: "DEV-008", name: "LED Array G", type: "Lighting", location: "Ground Floor", status: "online", voltage: 110.0, current: 12.4, temp: 30.2, power: 1364, health: 97, uptime: 99.6, lastSeen: "Just now" },
-  { id: "DEV-009", name: "Solar Inverter", type: "Renewable", location: "Rooftop", status: "online", voltage: 400.0, current: -21.5, temp: 38.1, power: -8600, health: 92, uptime: 99.1, lastSeen: "Just now" },
-  { id: "DEV-010", name: "Battery Bank 1", type: "Storage", location: "Basement", status: "online", voltage: 48.0, current: 12.3, temp: 24.5, power: 590, health: 78, uptime: 100, lastSeen: "Just now" },
-  { id: "DEV-011", name: "Air Handler AH-1", type: "HVAC", location: "Floor 3", status: "offline", voltage: 0, current: 0, temp: 0, power: 0, health: 0, uptime: 76.4, lastSeen: "2h ago" },
-  { id: "DEV-012", name: "UPS Alpha", type: "Power", location: "Server Room", status: "online", voltage: 230.0, current: 9.1, temp: 22.4, power: 2093, health: 100, uptime: 100, lastSeen: "Just now" },
+export const allDevices = [
+  // Utility Plant
+  { id: "UTL-001", name: "Air Compressor 1", type: "Compressor", location: "Utility Plant", status: "online", voltage: 415, current: 85, temp: 38, power: 52000, health: 95, uptime: 99.5, lastSeen: "Just now" },
+
+  { id: "UTL-002", name: "Air Compressor 2", type: "Compressor", location: "Utility Plant", status: "warning", voltage: 412, current: 92, temp: 48, power: 57000, health: 68, uptime: 95.2, lastSeen: "1m ago" },
+
+  { id: "UTL-003", name: "Chiller 1", type: "Cooling", location: "Utility Plant", status: "online", voltage: 415, current: 120, temp: 12, power: 75000, health: 96, uptime: 99.8, lastSeen: "Just now" },
+
+  { id: "UTL-004", name: "Cooling Tower", type: "Cooling", location: "Utility Plant", status: "online", voltage: 415, current: 35, temp: 28, power: 18000, health: 92, uptime: 99.3, lastSeen: "Just now" },
+
+  { id: "UTL-005", name: "Water Transfer Pump", type: "Pump", location: "Utility Plant", status: "online", voltage: 415, current: 18, temp: 30, power: 9000, health: 97, uptime: 99.6, lastSeen: "Just now" },
+
+  { id: "UTL-006", name: "Main Transformer", type: "Power", location: "Utility Plant", status: "online", voltage: 11000, current: 320, temp: 45, power: 250000, health: 98, uptime: 100, lastSeen: "Just now" },
+
+  { id: "UTL-007", name: "DG Set", type: "Power", location: "Utility Plant", status: "offline", voltage: 0, current: 0, temp: 0, power: 0, health: 0, uptime: 88.4, lastSeen: "3h ago" },
+
+  // Weaving Plant
+  { id: "WEV-001", name: "Air Jet Loom Line 1", type: "Weaving", location: "Weaving Plant", status: "online", voltage: 415, current: 42, temp: 34, power: 22000, health: 94, uptime: 99.1, lastSeen: "Just now" },
+
+  { id: "WEV-002", name: "Air Jet Loom Line 2", type: "Weaving", location: "Weaving Plant", status: "online", voltage: 415, current: 40, temp: 33, power: 21000, health: 93, uptime: 99.0, lastSeen: "Just now" },
+
+  { id: "WEV-003", name: "Rapier Loom Line", type: "Weaving", location: "Weaving Plant", status: "warning", voltage: 410, current: 48, temp: 41, power: 24500, health: 65, uptime: 94.7, lastSeen: "5m ago" },
+
+  { id: "WEV-004", name: "Warping Machine", type: "Preparation", location: "Weaving Plant", status: "online", voltage: 415, current: 25, temp: 29, power: 12000, health: 96, uptime: 99.4, lastSeen: "Just now" },
+
+  { id: "WEV-005", name: "Sizing Machine", type: "Preparation", location: "Weaving Plant", status: "online", voltage: 415, current: 28, temp: 31, power: 14500, health: 92, uptime: 98.7, lastSeen: "Just now" },
+
+  { id: "WEV-006", name: "Humidification Plant", type: "HVAC", location: "Weaving Plant", status: "online", voltage: 415, current: 55, temp: 26, power: 30000, health: 95, uptime: 99.5, lastSeen: "Just now" },
+
+  { id: "WEV-007", name: "Fabric Inspection Machine", type: "Inspection", location: "Weaving Plant", status: "online", voltage: 230, current: 8, temp: 27, power: 1800, health: 99, uptime: 99.9, lastSeen: "Just now" },
+
+  { id: "WEV-008", name: "Packaging Unit", type: "Packaging", location: "Weaving Plant", status: "online", voltage: 230, current: 12, temp: 29, power: 2800, health: 97, uptime: 99.7, lastSeen: "Just now" }
 ];
 
 const typeIcons: Record<string, React.ReactNode> = {
