@@ -39,7 +39,7 @@ export function Login({ onLogin }: LoginProps) {
         {/* Logo */}
         <div className="relative z-10 flex items-center gap-3">
           <div className="w-10 h-10 flex items-center justify-center">
-            <img src="D:\finalfilesforlogoletterheadandbusinesscard\finalfilesforlogoletterheadandbusinesscard\3.jpg" alt="Logo" className="w-full h-full object-contain rounded-xl" />
+            <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Logo" className="w-full h-full object-contain rounded-xl" />
           </div>
           <span style={{ color: "#F8FAFC", fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>Artivus Systems</span>
         </div>
@@ -113,7 +113,7 @@ export function Login({ onLogin }: LoginProps) {
           {/* Mobile logo */}
           <div className="flex lg:hidden items-center gap-3 mb-8">
             <div className="w-10 h-10 flex items-center justify-center">
-              <img src="D:\finalfilesforlogoletterheadandbusinesscard\finalfilesforlogoletterheadandbusinesscard\3.jpg" alt="Logo" className="w-full h-full object-contain rounded-xl" />
+              <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Logo" className="w-full h-full object-contain rounded-xl" />
             </div>
             <span style={{ color: "#F8FAFC", fontSize: 20, fontWeight: 700 }}>Artivus Systems</span>
           </div>
