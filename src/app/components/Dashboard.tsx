@@ -4,7 +4,7 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from "recharts";
 import {
-  Zap, TrendingUp, Cpu, DollarSign, Wind, Leaf, AlertTriangle,
+  Zap, TrendingUp, Cpu, IndianRupee, Wind, Leaf, AlertTriangle,
   ArrowUp, ArrowDown, ThumbsUp, Thermometer, Droplets, Activity, CheckCircle, XCircle, AlertCircle
 } from "lucide-react";
 import { allDevices } from "./Devices";
@@ -58,7 +58,7 @@ const kpis = [
   { label: "Total Energy", value: "48.6 MWh", delta: "+2.4%", up: true, sub: "Today vs yesterday", color: "#3B82F6", icon: <Zap size={20} />, gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))" },
   { label: "Current Load", value: "4.28 MW", delta: "-5.1%", up: false, sub: "vs peak capacity", color: "#22C55E", icon: <TrendingUp size={20} />, gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))" },
   { label: "Active Devices", value: "2,847", delta: "+12", up: true, sub: "1,842 online now", color: "#8B5CF6", icon: <Cpu size={20} />, gradient: "linear-gradient(135deg, rgba(139,92,246,0.15), rgba(139,92,246,0.05))" },
-  { label: "Monthly Cost", value: "₹84,210", delta: "-8.3%", up: false, sub: "vs last month", color: "#F59E0B", icon: <DollarSign size={20} />, gradient: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05))" },
+  { label: "Monthly Cost", value: "₹84,210", delta: "-8.3%", up: false, sub: "vs last month", color: "#F59E0B", icon: <IndianRupee size={20} />, gradient: "linear-gradient(135deg, rgba(245,158,11,0.15), rgba(245,158,11,0.05))" },
   { label: "CO₂ Emissions", value: "18.4 t", delta: "-12%", up: false, sub: "This month", color: "#22C55E", icon: <Leaf size={20} />, gradient: "linear-gradient(135deg, rgba(34,197,94,0.15), rgba(34,197,94,0.05))" },
   { label: "Energy Savings", value: "34.2%", delta: "+3.1%", up: true, sub: "vs baseline", color: "#3B82F6", icon: <Wind size={20} />, gradient: "linear-gradient(135deg, rgba(59,130,246,0.15), rgba(59,130,246,0.05))" },
 ];
