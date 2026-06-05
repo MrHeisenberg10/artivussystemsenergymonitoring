@@ -37,11 +37,14 @@ export function Login({ onLogin }: LoginProps) {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 rounded-full opacity-10 blur-2xl" style={{ background: "radial-gradient(circle, #8B5CF6, transparent)" }} />
 
         {/* Logo */}
-        <div className="relative z-10 flex items-center gap-3">
-          <div className="w-10 h-10 flex items-center justify-center">
-            <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Logo" className="w-full h-full object-contain rounded-xl" />
+        <div className="relative z-10 flex flex-col items-center gap-2 px-4 py-5" style={{ background: "transparent" }}>
+          <div className="w-full h-24 flex items-center justify-center" style={{ overflow: "hidden" }}>
+            <img src={`${import.meta.env.BASE_URL}1000230241.jpg`} alt="Logo" className="w-full h-full object-contain" />
           </div>
-          <span style={{ color: "#F8FAFC", fontSize: 20, fontWeight: 700, letterSpacing: "-0.02em" }}>Artivus Systems</span>
+          <div className="text-center">
+            <div style={{ color: "#22C55E", fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em" }}>Artivus Systems</div>
+            <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600 }}>v4.2.1 Enterprise</div>
+          </div>
         </div>
 
         {/* Center illustration */}
@@ -111,11 +114,14 @@ export function Login({ onLogin }: LoginProps) {
       <div className="flex flex-1 items-center justify-center p-8" style={{ background: "#0F172A" }}>
         <div className="w-full max-w-sm">
           {/* Mobile logo */}
-          <div className="flex lg:hidden items-center gap-3 mb-8">
-            <div className="w-10 h-10 flex items-center justify-center">
-              <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Logo" className="w-full h-full object-contain rounded-xl" />
+          <div className="flex lg:hidden flex-col items-center gap-2 mb-8">
+            <div className="w-full h-24 flex items-center justify-center" style={{ overflow: "hidden" }}>
+              <img src={`${import.meta.env.BASE_URL}1000230241.jpg`} alt="Logo" className="w-full h-full object-contain" />
             </div>
-            <span style={{ color: "#F8FAFC", fontSize: 20, fontWeight: 700 }}>Artivus Systems</span>
+            <div className="text-center">
+              <div style={{ color: "#ffffff", fontSize: 18, fontWeight: 800 }}>Artivus Systems</div>
+              <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600 }}>v4.2.1 Enterprise</div>
+            </div>
           </div>
 
           <div className="mb-8">

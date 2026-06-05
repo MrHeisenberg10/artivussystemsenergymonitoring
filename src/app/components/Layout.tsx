@@ -55,17 +55,17 @@ export function Layout({ children, activePage, onNavigate, onLogout }: LayoutPro
         }}
       >
         {/* Logo */}
-        <div className="flex items-center gap-3 px-4 py-5 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
-          <div className="w-9 h-9 flex items-center justify-center flex-shrink-0">
-            <img src={`${import.meta.env.BASE_URL}logo.jpg`} alt="Logo" className="w-full h-full object-contain rounded-lg" />
-          </div>
-          {sidebarOpen && (
-            <div>
-              <div style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 700, letterSpacing: "-0.01em" }}>Artivus Systems</div>
-              <div style={{ color: "#475569", fontSize: 11 }}>v4.2.1 Enterprise</div>
-            </div>
-          )}
-        </div>
+<div className="flex flex-col items-center gap-1 px-3 py-3 border-b" style={{ borderColor: "rgba(255,255,255,0.06)", background: "transparent" }}>
+  <div className="w-full h-24 flex items-center justify-center" style={{ overflow: "hidden" }}>
+    <img src={`${import.meta.env.BASE_URL}1000230241.jpg`} alt="Logo" className="w-full h-full object-contain" />
+  </div>
+  {sidebarOpen && (
+    <div className="w-full text-center">
+      <div style={{ color: "#F8FAFC", fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", textAlign: "center", marginBottom: "4px" }}>Artivus Systems</div>
+      <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600, textAlign: "center" }}>v4.2.1 Enterprise</div>
+    </div>
+  )}
+</div>
 
         {/* System status */}
         {sidebarOpen && (
