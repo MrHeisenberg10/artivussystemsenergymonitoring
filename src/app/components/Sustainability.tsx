@@ -1,8 +1,15 @@
+import { useState, useMemo } from "react";
 import {
   AreaChart, Area, LineChart, Line, BarChart, Bar, RadialBarChart, RadialBar,
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie
 } from "recharts";
 import { Leaf, Sun, Wind, TrendingDown, Award, Globe, Zap, Droplets, TreePine } from "lucide-react";
+import {
+  calculateTotalCarbonFootprint,
+  getTreeEquivalent,
+  getEmissionBreakdown,
+  EMISSION_FACTORS,
+} from "../../utils/carbonFootprint";
 
 const co2Monthly = [
   { month: "Jan", co2: 32.4, target: 28 }, { month: "Feb", co2: 29.8, target: 27 },
@@ -97,6 +104,79 @@ function ScoreRing({ score }: { score: number }) {
 export function Sustainability() {
   const sustainScore = 82;
 
+  // Energy consumption inputs — editable so changes propagate to all calculations
+  const [energyConsumption, setEnergyConsumption] = useState({
+    electricity: 100000, // kWh - Monthly consumption
+    diesel: 5000, // Liters - Monthly consumption
+    petrol: 1000, // Liters - Monthly consumption
+    lpg: 500, // kg - Monthly consumption
+  });
+
+  // Handler to update individual consumption fields
+  const handleConsumptionChange = (field: keyof typeof energyConsumption, value: string) => {
+    const numValue = value === "" ? 0 : parseFloat(value);
+    if (!isNaN(numValue) && numValue >= 0) {
+      setEnergyConsumption(prev => ({ ...prev, [field]: numValue }));
+    }
+  };
+
+  // Calculate carbon emissions from current consumption inputs
+  const carbonEmissions = useMemo(() => {
+    return calculateTotalCarbonFootprint(energyConsumption);
+  }, [energyConsumption]);
+
+  // Compute CO₂ reduction percentage relative to a 100 t baseline (dynamic)
+  const co2ReductionPercent = useMemo(() => {
+    // Ensure the baseline is not zero to avoid division by zero
+    const baseline = 100; // tonnes – arbitrary baseline for 100 % reduction target
+    const reduction = Math.max(0, Math.round((1 - carbonEmissions.total.emissionsTonnes / baseline) * 100));
+    return reduction;
+  }, [carbonEmissions.total.emissionsTonnes]);
+
+  // Compute Energy Efficiency as average solar generation percentage from renewableData
+  const energyEfficiencyPercent = useMemo(() => {
+    const totalSolar = renewableData.reduce((sum, d) => sum + d.solar, 0);
+    const avgSolar = Math.round(totalSolar / renewableData.length);
+    return avgSolar;
+  }, []);
+
+
+  // Get tree equivalent for carbon offset visualization
+  const treeEquivalent = useMemo(() => {
+    return getTreeEquivalent(carbonEmissions.total.emissionsTonnes);
+  }, [carbonEmissions]);
+
+  // Get emission breakdown percentages
+  const emissionBreakdown = useMemo(() => {
+    return getEmissionBreakdown(carbonEmissions);
+  }, [carbonEmissions]);
+
+  // Shared input styles for the editable fields
+  const inputStyle: React.CSSProperties = {
+    width: "100%",
+    padding: "6px 10px",
+    borderRadius: 8,
+    border: "1px solid rgba(255,255,255,0.12)",
+    background: "rgba(255,255,255,0.06)",
+    color: "#F8FAFC",
+    fontSize: 13,
+    fontWeight: 600,
+    fontFamily: "'JetBrains Mono', 'Inter', monospace",
+    outline: "none",
+    transition: "border-color 0.2s, box-shadow 0.2s",
+    marginTop: 6,
+  };
+
+  const inputFocusHandler = (e: React.FocusEvent<HTMLInputElement>, color: string) => {
+    e.target.style.borderColor = color;
+    e.target.style.boxShadow = `0 0 0 2px ${color}30`;
+  };
+
+  const inputBlurHandler = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.target.style.borderColor = "rgba(255,255,255,0.12)";
+    e.target.style.boxShadow = "none";
+  };
+
   return (
     <div className="p-6 flex flex-col gap-6" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Header */}
@@ -114,10 +194,10 @@ export function Sustainability() {
       {/* Top KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "CO₂ This Month", value: "18.4 t", delta: "-43%", icon: <Globe size={18} />, color: "#22C55E", sub: "vs Jan baseline" },
-          { label: "Carbon Avoided", value: "24.8 t", delta: "vs fossil", icon: <Leaf size={18} />, color: "#22C55E", sub: "Solar + renewables" },
-          { label: "Renewable Share", value: "62%", delta: "+8% MoM", icon: <Sun size={18} />, color: "#F59E0B", sub: "of total energy" },
-          { label: "Trees Equivalent", value: "412", delta: "carbon offset", icon: <TreePine size={18} />, color: "#22C55E", sub: "this year" },
+          { label: "CO₂ This Month", value: `${carbonEmissions.total.emissionsTonnes.toFixed(1)} t`, delta: `${co2ReductionPercent}%`, icon: <Globe size={18} />, color: "#22C55E", sub: "tCO₂e" },
+          { label: "Electricity Impact", value: `${carbonEmissions.electricity.emissionsTonnes.toFixed(1)} t`, delta: `${emissionBreakdown.electricity}%`, icon: <Zap size={18} />, color: "#3B82F6", sub: "of total" },
+          { label: "Fuel Impact", value: `${(carbonEmissions.diesel.emissionsTonnes + carbonEmissions.petrol.emissionsTonnes).toFixed(1)} t`, delta: `${(Number(emissionBreakdown.diesel) + Number(emissionBreakdown.petrol)).toFixed(1)}%`, icon: <Wind size={18} />, color: "#F59E0B", sub: "diesel + petrol" },
+          { label: "Trees Equivalent", value: `${treeEquivalent}`, delta: "carbon offset", icon: <TreePine size={18} />, color: "#22C55E", sub: "trees planted offset" },
         ].map((kpi) => (
           <GlassCard key={kpi.label} className="p-4">
             <div className="flex items-center justify-between mb-3">
@@ -127,7 +207,7 @@ export function Sustainability() {
               <span style={{ color: kpi.color, fontSize: 12, fontWeight: 600 }}>{kpi.delta}</span>
             </div>
             <div style={{ color: "#F8FAFC", fontSize: 22, fontWeight: 700 }}>{kpi.value}</div>
-            <div style={{ color: "#64748B", fontSize: 12, marginTop: 2 }}>{kpi.label}</div>
+            <div style={{ color: "#F8FAFC", fontSize: 12, marginTop: 2 }}>{kpi.label}</div>
             <div style={{ color: "#334155", fontSize: 11, marginTop: 1 }}>{kpi.sub}</div>
           </GlassCard>
         ))}
@@ -255,7 +335,145 @@ export function Sustainability() {
         </GlassCard>
       </div>
 
-      {/* Carbon offset circular charts */}
+      {/* Carbon Footprint Calculation with EDITABLE INPUTS */}
+      <GlassCard className="p-6">
+        <div className="flex items-center justify-between mb-2">
+          <div>
+            <h3 style={{ color: "#F8FAFC", fontSize: 15, fontWeight: 600 }}>Carbon Footprint Calculation - Indian Standards</h3>
+            <p style={{ color: "#64748B", fontSize: 12, marginTop: 1 }}>Energy consumption × Emission factors (kg CO₂e/unit)</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 mb-6 px-3 py-2 rounded-lg" style={{ background: "rgba(59,130,246,0.08)", border: "1px solid rgba(59,130,246,0.15)" }}>
+          <Zap size={14} color="#60A5FA" />
+          <span style={{ color: "#93C5FD", fontSize: 12 }}>Edit the consumption values below — all KPIs &amp; sustainability metrics update automatically</span>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          {/* Electricity */}
+          <div className="p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(59,130,246,0.3)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Zap size={16} color="#3B82F6" />
+              <span style={{ color: "#F8FAFC", fontSize: 12, fontWeight: 600 }}>Electricity</span>
+            </div>
+            <div style={{ color: "#3B82F6", fontSize: 18, fontWeight: 700 }}>{carbonEmissions.electricity.emissionsTonnes.toFixed(1)}</div>
+            <div style={{ color: "#64748B", fontSize: 10, marginTop: 1 }}>tCO₂e</div>
+            <div style={{ marginTop: 8 }}>
+              <label style={{ color: "#94A3B8", fontSize: 10, fontWeight: 500 }}>Consumption (kWh)</label>
+              <input
+                id="input-electricity"
+                type="number"
+                min="0"
+                value={energyConsumption.electricity}
+                onChange={(e) => handleConsumptionChange("electricity", e.target.value)}
+                onFocus={(e) => inputFocusHandler(e, "#3B82F6")}
+                onBlur={inputBlurHandler}
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ color: "#475569", fontSize: 10, marginTop: 6 }}>
+              {energyConsumption.electricity.toLocaleString()} × {EMISSION_FACTORS.ELECTRICITY} = {carbonEmissions.electricity.emissions.toFixed(0)} kg
+            </div>
+          </div>
+
+          {/* Diesel */}
+          <div className="p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(239,68,68,0.3)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Droplets size={16} color="#EF4444" />
+              <span style={{ color: "#F8FAFC", fontSize: 12, fontWeight: 600 }}>Diesel</span>
+            </div>
+            <div style={{ color: "#EF4444", fontSize: 18, fontWeight: 700 }}>{carbonEmissions.diesel.emissionsTonnes.toFixed(1)}</div>
+            <div style={{ color: "#64748B", fontSize: 10, marginTop: 1 }}>tCO₂e</div>
+            <div style={{ marginTop: 8 }}>
+              <label style={{ color: "#94A3B8", fontSize: 10, fontWeight: 500 }}>Consumption (Liters)</label>
+              <input
+                id="input-diesel"
+                type="number"
+                min="0"
+                value={energyConsumption.diesel}
+                onChange={(e) => handleConsumptionChange("diesel", e.target.value)}
+                onFocus={(e) => inputFocusHandler(e, "#EF4444")}
+                onBlur={inputBlurHandler}
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ color: "#475569", fontSize: 10, marginTop: 6 }}>
+              {energyConsumption.diesel.toLocaleString()} L × {EMISSION_FACTORS.DIESEL} = {carbonEmissions.diesel.emissions.toFixed(0)} kg
+            </div>
+          </div>
+
+          {/* Petrol */}
+          <div className="p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(245,158,11,0.3)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Wind size={16} color="#F59E0B" />
+              <span style={{ color: "#F8FAFC", fontSize: 12, fontWeight: 600 }}>Petrol</span>
+            </div>
+            <div style={{ color: "#F59E0B", fontSize: 18, fontWeight: 700 }}>{carbonEmissions.petrol.emissionsTonnes.toFixed(1)}</div>
+            <div style={{ color: "#64748B", fontSize: 10, marginTop: 1 }}>tCO₂e</div>
+            <div style={{ marginTop: 8 }}>
+              <label style={{ color: "#94A3B8", fontSize: 10, fontWeight: 500 }}>Consumption (Liters)</label>
+              <input
+                id="input-petrol"
+                type="number"
+                min="0"
+                value={energyConsumption.petrol}
+                onChange={(e) => handleConsumptionChange("petrol", e.target.value)}
+                onFocus={(e) => inputFocusHandler(e, "#F59E0B")}
+                onBlur={inputBlurHandler}
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ color: "#475569", fontSize: 10, marginTop: 6 }}>
+              {energyConsumption.petrol.toLocaleString()} L × {EMISSION_FACTORS.PETROL} = {carbonEmissions.petrol.emissions.toFixed(0)} kg
+            </div>
+          </div>
+
+          {/* LPG */}
+          <div className="p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(139,92,246,0.3)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Sun size={16} color="#8B5CF6" />
+              <span style={{ color: "#F8FAFC", fontSize: 12, fontWeight: 600 }}>LPG</span>
+            </div>
+            <div style={{ color: "#8B5CF6", fontSize: 18, fontWeight: 700 }}>{carbonEmissions.lpg.emissionsTonnes.toFixed(1)}</div>
+            <div style={{ color: "#64748B", fontSize: 10, marginTop: 1 }}>tCO₂e</div>
+            <div style={{ marginTop: 8 }}>
+              <label style={{ color: "#94A3B8", fontSize: 10, fontWeight: 500 }}>Consumption (kg)</label>
+              <input
+                id="input-lpg"
+                type="number"
+                min="0"
+                value={energyConsumption.lpg}
+                onChange={(e) => handleConsumptionChange("lpg", e.target.value)}
+                onFocus={(e) => inputFocusHandler(e, "#8B5CF6")}
+                onBlur={inputBlurHandler}
+                style={inputStyle}
+              />
+            </div>
+            <div style={{ color: "#475569", fontSize: 10, marginTop: 6 }}>
+              {energyConsumption.lpg.toLocaleString()} kg × {EMISSION_FACTORS.LPG} = {carbonEmissions.lpg.emissions.toFixed(0)} kg
+            </div>
+          </div>
+
+          {/* Total */}
+          <div className="p-4 rounded-xl" style={{ background: "linear-gradient(135deg, rgba(34,197,94,0.1) 0%, rgba(30,41,59,0.7) 100%)", border: "1px solid rgba(34,197,94,0.3)" }}>
+            <div className="flex items-center gap-2 mb-3">
+              <Globe size={16} color="#22C55E" />
+              <span style={{ color: "#F8FAFC", fontSize: 12, fontWeight: 600 }}>Total</span>
+            </div>
+            <div style={{ color: "#22C55E", fontSize: 24, fontWeight: 800 }}>{carbonEmissions.total.emissionsTonnes.toFixed(1)}</div>
+            <div style={{ color: "#64748B", fontSize: 10, marginTop: 1 }}>tCO₂e</div>
+            <div style={{ color: "#475569", fontSize: 10, marginTop: 8 }}>
+              Monthly carbon footprint
+            </div>
+            <div style={{ color: "#475569", fontSize: 10, marginTop: 1 }}>
+              (Indian Standards)
+            </div>
+            <div style={{ color: "#22C55E", fontSize: 10, marginTop: 6, fontWeight: 600 }}>
+              ≈ {treeEquivalent} trees to offset
+            </div>
+          </div>
+        </div>
+      </GlassCard>
+
+      {/* Environmental Impact Summary */}
       <GlassCard className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>
@@ -269,16 +487,16 @@ export function Sustainability() {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <CircularProgress value={62} max={100} color="#F59E0B" label="Renewable Energy" sublabel="%" />
-          <CircularProgress value={43} max={100} color="#22C55E" label="CO₂ Reduction" sublabel="%" />
-          <CircularProgress value={78} max={100} color="#3B82F6" label="Energy Efficiency" sublabel="score" />
-          <CircularProgress value={28} max={100} color="#8B5CF6" label="Carbon Offset" sublabel="t CO₂" />
+          <CircularProgress value={co2ReductionPercent} max={100} color="#22C55E" label="CO₂ Reduction" sublabel="%" />
+          <CircularProgress value={energyEfficiencyPercent} max={100} color="#3B82F6" label="Energy Efficiency" sublabel="score" />
+          <CircularProgress value={Math.round((carbonEmissions.total.emissionsTonnes / 100) * 100)} max={100} color="#8B5CF6" label="Carbon Footprint" sublabel="t CO₂e/mo" />
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
           {[
-            { icon: <Sun size={16} color="#F59E0B" />, label: "Solar Generated", value: "87.4 MWh", sub: "YTD" },
-            { icon: <Droplets size={16} color="#3B82F6" />, label: "Water Saved", value: "2,840 L", sub: "vs baseline" },
-            { icon: <TreePine size={16} color="#22C55E" />, label: "Carbon Equivalent", value: "412 trees", sub: "planted offset" },
-            { icon: <TrendingDown size={16} color="#22C55E" />, label: "Waste Reduction", value: "31.4%", sub: "vs last year" },
+            { icon: <Zap size={16} color="#3B82F6" />, label: "Electricity Emissions", value: `${carbonEmissions.electricity.emissionsTonnes.toFixed(1)} t`, sub: "kWh consumption" },
+            { icon: <Droplets size={16} color="#EF4444" />, label: "Fuel Emissions", value: `${(carbonEmissions.diesel.emissionsTonnes + carbonEmissions.petrol.emissionsTonnes + carbonEmissions.lpg.emissionsTonnes).toFixed(1)} t`, sub: "diesel + petrol + LPG" },
+            { icon: <TreePine size={16} color="#22C55E" />, label: "Carbon Equivalent", value: `${treeEquivalent} trees`, sub: "planted offset" },
+            { icon: <TrendingDown size={16} color="#22C55E" />, label: "Emission Reduction", value: "31.4%", sub: "vs last year" },
           ].map(item => (
             <div key={item.label} className="flex items-start gap-3 p-4 rounded-xl" style={{ background: "rgba(255,255,255,0.03)", border: "1px solid rgba(255,255,255,0.05)" }}>
               <div className="mt-0.5">{item.icon}</div>

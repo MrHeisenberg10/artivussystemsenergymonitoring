@@ -42,7 +42,6 @@ export function Login({ onLogin }: LoginProps) {
             <img src={`${import.meta.env.BASE_URL}1000230241.jpg`} alt="Logo" className="w-full h-full object-contain" />
           </div>
           <div className="text-center">
-            <div style={{ color: "#22C55E", fontSize: 18, fontWeight: 800, letterSpacing: "-0.02em" }}>Artivus Systems</div>
             <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600 }}>v4.2.1 Enterprise</div>
           </div>
         </div>
