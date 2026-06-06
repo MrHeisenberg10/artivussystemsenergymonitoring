@@ -61,8 +61,8 @@ export function Layout({ children, activePage, onNavigate, onLogout }: LayoutPro
   </div>
   {sidebarOpen && (
     <div className="w-full text-center">
-      <div style={{ color: "#F8FAFC", fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", textAlign: "center", marginBottom: "4px" }}>Artivus Systems</div>
-      <div style={{ color: "#F8FAFC", fontSize: 13, fontWeight: 600, textAlign: "center" }}>v4.2.1 Enterprise</div>
+      <div style={{ color: "#F8FAFC", fontSize: 18, fontWeight: 800, letterSpacing: "-0.01em", textAlign: "center", marginBottom: "4px" }}></div>
+      <div style={{ color: "#F8FAFC", fontSize: 14, fontWeight: 400, textAlign: "center" }}>v4.2.1 Enterprise</div>
     </div>
   )}
 </div>
